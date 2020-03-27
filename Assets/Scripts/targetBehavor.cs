@@ -6,21 +6,61 @@ using UnityEngine;
 public class targetBehavor : MonoBehaviour
 {
     private float cnt = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-        transform.localScale = new Vector3(0f, 0.6f, 0.6f);
-    }
+    private bool isCollided = false;
+    private int ratio = 1;
+    private bool rightClicked = false;
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(rightClicked);
 
-        if(transform.localScale.x <= 0.6)
+        if (this.rightClicked)
         {
-            transform.localScale = new Vector3(cnt, 0.6f, 0.6f);
+            //的解放
+            int dice = Random.Range(0, 200);
+            //Debug.Log(dice);
+            if (dice <= ratio)
+            {
+                this.transform.localScale = new Vector3(1, 1, 1);
+            }
         }
-        cnt += 0.1f;
 
+        //弾ヒット時の挙動
+        if (isCollided)
+        {
+            float rot = 0.2f;
+            Vector3 targetLocalScale = transform.localScale;
+            if(targetLocalScale.x > 0.01f)
+            {
+                //回転
+                targetLocalScale.x -= rot;
+                transform.localScale = targetLocalScale;
+                Debug.Log(transform.localScale);
+            }
+            else
+            {
+                targetLocalScale.x = 0;
+                transform.localScale = targetLocalScale;
+                //Debug.Log(targetLocalScale);
+                isCollided = false;
+            }
+        }
+
+        //（デバッグ用）右クリックで・・・
+        if (Input.GetMouseButtonDown(1))
+        {
+            //的表示
+            //transform.localScale = new Vector3(1, 1, 1);
+
+            //ランダム表示開始
+            this.rightClicked = true;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //Destroy(gameObject);
+        isCollided = true;
     }
 }
