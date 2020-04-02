@@ -12,7 +12,6 @@ public class clickObserver : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-
             clickedGameObject = null;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -23,8 +22,6 @@ public class clickObserver : MonoBehaviour
                 clickedGameObject = hit2d.transform.gameObject;
                 //clickedGameObject.transform.localScale = new Vector2(0f, 0.6f);
             }
-
-            Debug.Log(clickedGameObject);
         }
     }
 }

@@ -6,6 +6,11 @@ public class BulletGenerator : MonoBehaviour
 {
     public GameObject bulletPrefab;
 
+    private void Start()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -14,7 +19,6 @@ public class BulletGenerator : MonoBehaviour
             //　弾生成
             GameObject bullet
                 = Instantiate(this.bulletPrefab) as GameObject;
-
             // Vector3でマウス位置座標を取得する
             Vector3 position = Input.mousePosition;
             // Z軸修正
