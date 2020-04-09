@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameDirector : MonoBehaviour
+public class GameDirector_TargetCountVer : MonoBehaviour
 {
     public float count = 0;
     GameObject bulletCountText;
@@ -20,7 +20,7 @@ public class GameDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //時間表示
+        //時間更新
         time -= Time.deltaTime;
         if(time < 0) time = 0f;
         remainingTime.GetComponent<Text>().text
@@ -28,7 +28,7 @@ public class GameDirector : MonoBehaviour
 
         //ヒットしたターゲットの数表示
         GetTargetCount();
-;    }
+    }
 
     public void TargetHitCount()
     {
