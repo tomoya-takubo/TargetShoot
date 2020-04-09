@@ -114,10 +114,11 @@ MonoBehaviour:
   scoreTextPrefab: {fileID: 1857310902910292206, guid: 2a047941649278c498421b84e5d4e7e6,
     type: 3}
   scores:
-  - OK!
-  - Great!!
-  - Fantastic!!!
+  - Hit!
+  - Nice!!
+  - Critical!!!
   scorePoints: 1e0000003200000064000000
+  rotationSpeed: 0.5
 --- !u!82 &313874229805491381
 AudioSource:
   m_ObjectHideFlags: 0

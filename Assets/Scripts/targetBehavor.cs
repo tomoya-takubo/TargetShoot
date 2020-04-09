@@ -11,11 +11,13 @@ public class targetBehavor : MonoBehaviour
     public float rotationSpeed = 0.5f;
 
     private bool isCollided = false;
-    private int ratio = 1;
+    private int ratio = 1;  //的の出現割合
     private AudioSource aud;
     private Collider2D col;
     //private GameObject gmDirector;
     private GameDirector_ScoreCountVer gmDirector;
+    private int cnt = 0;
+    private bool critical = false;
 
 
     private void Start()
@@ -40,12 +42,15 @@ public class targetBehavor : MonoBehaviour
 
     public void Appeared()
     {
-        int dice = Random.Range(0, 200);
-        //Debug.Log(dice);
-        if (dice <= ratio)
+        if (!isCollided)    //弾衝突～消滅間での生成回避
         {
-            this.transform.localScale = new Vector3(1, 1, 1);
-            col.enabled = true;
+            int dice = Random.Range(0, 200);
+            //Debug.Log(dice);
+            if (dice <= ratio)
+            {
+                this.transform.localScale = new Vector3(1, 1, 1);
+                col.enabled = true;
+            }
         }
     }
 
@@ -54,43 +59,52 @@ public class targetBehavor : MonoBehaviour
         if (isCollided)
         {
             Vector3 targetLocalScale = transform.localScale;
-            //回転
-            targetLocalScale.x -= rotationSpeed;    // * Time.deltaTime;
-            if(targetLocalScale.x >= -1)
-            {
-                transform.localScale = targetLocalScale;
-                if (transform.localScale.x <= -1)
-                {
-                    Debug.Log("transform.localScale.x：" + transform.localScale.x);
-                    targetLocalScale.x = 1;
-                    transform.localScale = targetLocalScale;
-                }
-            }
-            /***
-            else
-            {
-                targetLocalScale.x = 1;
-                transform.localScale = targetLocalScale;
-            }
-            ***/
 
-            /***
-            if (targetLocalScale.x > 0.01f)
+            //クリティカルヒット時
+            if (critical)
             {
                 //回転
-                targetLocalScale.x -= rot;
-                transform.localScale = targetLocalScale;
-                //Debug.Log(transform.localScale);
+                targetLocalScale.x -= rotationSpeed;    // * Time.deltaTime;
+                if (targetLocalScale.x >= -1)
+                {
+                    transform.localScale = targetLocalScale;
 
+                    if (transform.localScale.x <= 0 && cnt == 3)
+                    {
+                        cnt = 0;    //カウンター初期化
+                        targetLocalScale.x = 0;
+                        transform.localScale = targetLocalScale;
+                        isCollided = false;
+                        critical = false;
+                    }
+                    else if (transform.localScale.x <= -1)
+                    {
+                        cnt++;  //インクリメント
+                        //Debug.Log("transform.localScale.x：" + transform.localScale.x);
+                        targetLocalScale.x = 1;
+                        transform.localScale = targetLocalScale;
+                    }
+                }
             }
+            //通常ヒット時
             else
             {
-                targetLocalScale.x = 0;
-                transform.localScale = targetLocalScale;
-                //Debug.Log(targetLocalScale);
-                isCollided = false;
+                if (targetLocalScale.x > 0.01f)
+                {
+                    //回転
+                    targetLocalScale.x -= 0.5f * rotationSpeed;
+                    transform.localScale = targetLocalScale;
+                    //Debug.Log(transform.localScale);
+
+                }
+                else
+                {
+                    targetLocalScale.x = 0;
+                    transform.localScale = targetLocalScale;
+                    //Debug.Log(targetLocalScale);
+                    isCollided = false;
+                }
             }
-            ***/
         }
     }
 
@@ -110,9 +124,6 @@ public class targetBehavor : MonoBehaviour
             , transform.rotation);
         //的と弾の距離
         float dis = Vector2.Distance(transform.position, collision.transform.position);
-        //Debug.Log("的の位置：" + transform.position);
-        //Debug.Log("弾の位置：" + collision.transform.position);
-        //Debug.Log("距離は " + dis + " mです");
         //表示決定
         string score = "";
         int scorePoint = 0;
@@ -130,8 +141,10 @@ public class targetBehavor : MonoBehaviour
         {
             score = scores[2];
             scorePoint = scorePoints[2];
+            critical = true;
         }
         scoreText.GetComponent<ScoreBehavor>().Setup(score);
         gmDirector.UpdateScore(scorePoint);
+        gmDirector.UpdateTargetScore();
     }
 }
